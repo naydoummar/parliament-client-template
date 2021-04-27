@@ -14,6 +14,16 @@ import { useEffect } from "react"
 import { graphql, navigate } from "gatsby"
 import { stripManifestPath } from "@adobe/parliament-ui-components"
 
+const getItem = key =>
+    document.cookie.split("; ").reduce((total, currentCookie) => {
+       const item = currentCookie.split("=");
+       const storedKey = item[0];
+       const storedValue = item[1];
+       return key === storedKey 
+         ? decodeURIComponent(storedValue) 
+         : total;
+    }, '');
+
 const IndexTemplate = (props) => {
   const homePage = stripManifestPath(
     props.data.parliamentNavigation.homePage,
@@ -21,6 +31,11 @@ const IndexTemplate = (props) => {
   )
 
   useEffect(() => {
+    const storedState = {
+        username: getItem("test")
+     }
+
+    window.localStorage.setItem("user_session", JSON.stringify(storedState))
     navigate(homePage, {
       replace: true,
     })
